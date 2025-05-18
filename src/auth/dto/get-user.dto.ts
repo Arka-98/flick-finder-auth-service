@@ -1,9 +1,7 @@
+import { IdAndTimestampDto } from '@flick-finder/common';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class GetUserDto {
-  @ApiProperty()
-  id: string;
-
+export class GetUserDto extends IdAndTimestampDto {
   @ApiProperty({ minLength: 3 })
   name: string;
 
@@ -15,10 +13,4 @@ export class GetUserDto {
 
   @ApiProperty()
   dob: Date;
-
-  @ApiProperty()
-  createdAt: Date;
-
-  @ApiProperty()
-  updatedAt: Date;
 }

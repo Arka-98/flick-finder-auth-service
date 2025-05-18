@@ -5,9 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    logger: ['error', 'warn', 'log'],
-  });
+  const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
   const config = new DocumentBuilder()
     .setTitle('Flick Finder Auth Service')
@@ -15,12 +13,15 @@ async function bootstrap() {
     .setVersion('1.0')
     .addBearerAuth()
     .build();
+
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.setGlobalPrefix('api/v1');
+
   const document = SwaggerModule.createDocument(app, config, {
     deepScanRoutes: true,
   });
 
   SwaggerModule.setup('api/v1', app, document);
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   await app.listen(configService.get('APP_PORT'));
 }

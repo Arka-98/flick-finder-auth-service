@@ -3,11 +3,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../schemas/user.schema';
 import { Model, Types } from 'mongoose';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { KafkaService, TOPICS } from '@flick-finder/common';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
+    private readonly kafkaService: KafkaService,
   ) {}
 
   async getUserById(id: Types.ObjectId) {
@@ -19,10 +21,26 @@ export class UsersService {
   }
 
   async updateUserById(id: Types.ObjectId, updateUserDto: UpdateUserDto) {
-    return this.userModel.findByIdAndUpdate(id, { $set: updateUserDto }).exec();
+    return this.userModel
+      .findByIdAndUpdate(id, { $set: updateUserDto })
+      .exec()
+      .then((user) => {
+        this.kafkaService.emit(TOPICS.USER.UPDATED, { value: user.toJSON() });
+
+        return user;
+      });
   }
 
   async deleteUserById(id: Types.ObjectId) {
-    return this.userModel.findByIdAndDelete(id).exec();
+    return this.userModel
+      .findByIdAndDelete(id)
+      .exec()
+      .then(({ _id }) => {
+        this.kafkaService.emit(TOPICS.USER.DELETED, {
+          value: _id.toString(),
+        });
+
+        return _id.toString();
+      });
   }
 }

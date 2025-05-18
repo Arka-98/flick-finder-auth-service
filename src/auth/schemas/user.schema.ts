@@ -19,8 +19,8 @@ export class User implements IUser {
   @Prop()
   email: string;
 
-  @Prop({ type: Number })
-  phone: number;
+  @Prop()
+  phone: string;
 
   @Prop({ type: Date })
   dob: Date;

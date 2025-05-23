@@ -4,8 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
-import { CommonModule } from '@flick-finder/common';
-import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { CommonModule, LoggerMiddleware } from '@flick-finder/common';
 
 @Module({
   imports: [

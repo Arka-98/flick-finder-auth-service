@@ -22,7 +22,7 @@ export class UsersService {
 
   async updateUserById(id: Types.ObjectId, updateUserDto: UpdateUserDto) {
     return this.userModel
-      .findByIdAndUpdate(id, { $set: updateUserDto })
+      .findByIdAndUpdate(id, { $set: updateUserDto }, { new: true })
       .exec()
       .then((user) => {
         if (!user) {

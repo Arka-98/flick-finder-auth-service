@@ -12,6 +12,7 @@ import {
   ApiBearerAuth,
   ApiNoContentResponse,
   ApiOkResponse,
+  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { GetUserDto } from '../dto/get-user.dto';
@@ -34,6 +35,7 @@ export class UsersController {
 
   @Get(':id')
   @HttpCode(200)
+  @ApiParam({ name: 'id', type: String })
   @ApiOkResponse({ type: GetUserDto })
   getUserById(@Param('id', ParseObjectIdPipe) id: Types.ObjectId) {
     return this.usersService.getUserById(id);
@@ -41,6 +43,7 @@ export class UsersController {
 
   @Put(':id')
   @HttpCode(204)
+  @ApiParam({ name: 'id', type: String })
   @ApiNoContentResponse()
   updateUserById(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
@@ -51,6 +54,7 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(204)
+  @ApiParam({ name: 'id', type: String })
   @ApiNoContentResponse()
   deleteUserById(@Param('id', ParseObjectIdPipe) id: Types.ObjectId) {
     return this.usersService.deleteUserById(id);

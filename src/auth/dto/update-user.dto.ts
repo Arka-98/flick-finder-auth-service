@@ -1,8 +1,7 @@
 import { RolesEnum } from '@flick-finder/common';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsDateString,
-  IsEmail,
   IsEnum,
   IsMobilePhone,
   IsOptional,
@@ -12,13 +11,10 @@ import {
 
 export class UpdateUserDto {
   @IsString()
+  @IsOptional()
   @MinLength(3)
-  @ApiProperty()
-  name: string;
-
-  @IsEmail()
-  @ApiProperty()
-  email: string;
+  @ApiPropertyOptional()
+  name?: string;
 
   @IsMobilePhone('en-IN')
   @IsOptional()
@@ -26,11 +22,12 @@ export class UpdateUserDto {
   phone?: string;
 
   @IsDateString()
-  @ApiProperty()
-  dob: string;
+  @IsOptional()
+  @ApiPropertyOptional()
+  dob?: string;
 
   @IsEnum(RolesEnum)
   @IsOptional()
-  @ApiPropertyOptional({ default: RolesEnum.CUSTOMER, enum: RolesEnum })
-  role: RolesEnum;
+  @ApiPropertyOptional({ enum: RolesEnum })
+  role?: RolesEnum;
 }

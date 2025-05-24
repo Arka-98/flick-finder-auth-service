@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../schemas/user.schema';
 import { Model, Types } from 'mongoose';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { KafkaService, TOPICS } from '@flick-finder/common';
+import { KafkaService, ObjectUtil, TOPICS } from '@flick-finder/common';
 
 @Injectable()
 export class UsersService {
@@ -25,7 +25,19 @@ export class UsersService {
       .findByIdAndUpdate(id, { $set: updateUserDto })
       .exec()
       .then((user) => {
-        this.kafkaService.emit(TOPICS.USER.UPDATED, { value: user.toJSON() });
+        if (!user) {
+          throw new NotFoundException('User not found');
+        }
+
+        this.kafkaService.emit(TOPICS.USER.UPDATED, {
+          value: ObjectUtil.pick(user.toObject(), [
+            '_id',
+            'name',
+            'email',
+            'phone',
+            'role',
+          ]),
+        });
 
         return user;
       });
@@ -35,12 +47,16 @@ export class UsersService {
     return this.userModel
       .findByIdAndDelete(id)
       .exec()
-      .then(({ _id }) => {
+      .then((user) => {
+        if (!user) {
+          throw new NotFoundException('User not found');
+        }
+
         this.kafkaService.emit(TOPICS.USER.DELETED, {
-          value: _id.toString(),
+          value: user._id.toString(),
         });
 
-        return _id.toString();
+        return user._id.toString();
       });
   }
 }

@@ -5,7 +5,12 @@ import { Model } from 'mongoose';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
-import { KafkaService, TOPICS, UserUtil } from '@flick-finder/common';
+import {
+  KafkaService,
+  ObjectUtil,
+  TOPICS,
+  UserUtil,
+} from '@flick-finder/common';
 
 @Injectable()
 export class AuthService {
@@ -22,9 +27,15 @@ export class AuthService {
 
     await createdUser.save();
 
-    const { password, ...value } = createdUser.toJSON();
-
-    this.kafkaService.emit(TOPICS.USER.CREATED, { value });
+    this.kafkaService.emit(TOPICS.USER.CREATED, {
+      value: ObjectUtil.pick(createdUser.toObject(), [
+        '_id',
+        'name',
+        'email',
+        'phone',
+        'role',
+      ]),
+    });
 
     return {
       accessToken: this.jwtService.sign({

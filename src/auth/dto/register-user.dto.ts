@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsStrongPassword } from 'class-validator';
+import { IsEmail, IsStrongPassword } from 'class-validator';
 import { UpdateUserDto } from './update-user.dto';
 
 export class RegisterUserDto extends UpdateUserDto {
@@ -11,4 +11,8 @@ export class RegisterUserDto extends UpdateUserDto {
   })
   @ApiProperty()
   password: string;
+
+  @IsEmail()
+  @ApiProperty()
+  email: string;
 }

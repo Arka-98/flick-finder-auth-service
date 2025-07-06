@@ -28,6 +28,7 @@ export class AuthService {
     await createdUser.save();
 
     this.kafkaService.emit(TOPICS.USER.CREATED, {
+      key: createdUser._id.toString(),
       value: ObjectUtil.pick(createdUser.toObject(), [
         '_id',
         'name',

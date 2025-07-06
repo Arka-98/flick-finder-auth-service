@@ -5,7 +5,7 @@ services:
       - 27018:27017
   
   redis:
-    image: redis
+    build: ./redis
     ports:
       - 6379:6379
   

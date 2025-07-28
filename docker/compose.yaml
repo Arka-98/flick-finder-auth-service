@@ -9,6 +9,11 @@ services:
     ports:
       - 6379:6379
   
+  redisinsight:
+    image: redis/redisinsight:latest
+    ports:
+      - 5540:5540
+  
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     ports:

@@ -53,6 +53,7 @@ export class UsersService {
         }
 
         this.kafkaService.emit(TOPICS.USER.DELETED, {
+          key: user._id.toString(),
           value: user._id.toString(),
         });
 

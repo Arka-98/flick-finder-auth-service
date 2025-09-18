@@ -18,6 +18,7 @@ async function bootstrap() {
   app.disable('x-powered-by');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.setGlobalPrefix('api/v1');
+  app.enableCors();
 
   const document = SwaggerModule.createDocument(app, config, {
     deepScanRoutes: true,
